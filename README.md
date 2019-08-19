@@ -1,4 +1,4 @@
-# Cloudflare-Public-Dynamic-IP-Update
+# Cloudflare Public Dynamic IP Update
 Updating public dynamic IP address to existing cloudflare DNS record (Only work for updating single DNS Zone)
 
 
