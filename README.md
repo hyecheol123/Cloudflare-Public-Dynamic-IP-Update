@@ -31,10 +31,6 @@ As soon as I check the issue, I will update the list.
 #### Tested OS List
 - Ubuntu 18.04.2 LTS
 
-
-## Acknowledgement
-This work is a part of website rebuilding project, supported by KSEA-Wisconsin, Korean-American Scientists and Engineers Association - Wisconsin Chapter.
-
 ## Contact
 If you have any question or want to report an error (or any other suggestion), simply make an issue with description.
 
