@@ -29,6 +29,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
     readResult+="$line"
 done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
 unset IFS
+unset SCRIPT_PATH
 
 ## After retrieve information from file, cut result string into configuration elements
 key=$(echo $(echo $readResult | cut -d' ' -f 1) | cut -d'=' -f 2)
