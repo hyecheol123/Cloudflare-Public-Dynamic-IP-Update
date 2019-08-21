@@ -3,7 +3,7 @@ Updating public dynamic IP address to existing cloudflare DNS record (Only work 
 
 
 ## Requirement
-Using [curl](https://en.wikipedia.org/wiki/CURL), [jq](https://stedolan.github.io/jq/), and [dig](https://en.wikipedia.org/wiki/Dig_(command)) command. <br/>
+Using [curl](https://en.wikipedia.org/wiki/CURL), [jq](https://stedolan.github.io/jq/) (Need to install **epel-release** prior to install jq in CentOS), and [dig](https://en.wikipedia.org/wiki/Dig_(command)) command. <br/>
 Check whether jq is installed on your system or not before use this script
 
 Need to customize cloudflare_config file before using this script.
@@ -30,6 +30,7 @@ As soon as I check the issue, I will update the list.
 
 #### Tested OS List
 - Ubuntu 18.04.2 LTS
+- CentOS Linux release 7.6.1810
 
 ## Contact
 If you have any question or want to report an error (or any other suggestion), simply make an issue with description.
