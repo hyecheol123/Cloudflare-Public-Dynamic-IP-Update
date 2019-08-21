@@ -22,11 +22,12 @@ fi
 ## Read configuration from separated cloudflare_config file (need to locate in the same directory)
 ## https://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
 ## https://stackoverflow.com/questions/10586153/split-string-into-an-array-in-bash
+SCRIPT_PATH=SCRIPT_PATH=$(dirname $(realpath $0))
 readResult=""  ## Store configuration
 while IFS= read -r line || [[ -n "$line" ]]; do
     readResult+=" "  ## Delimiter: space
     readResult+="$line"
-done < cloudflare_config  ## use cloudflare_config file
+done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
 unset IFS
 
 ## After retrieve information from file, cut result string into configuration elements
