@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 ## Author: Hyecheol (Jerry) Jang
 ## Shell Script that check current public (dynamic) ip address of server,
