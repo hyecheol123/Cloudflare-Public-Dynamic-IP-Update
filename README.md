@@ -31,6 +31,7 @@ As soon as I check the issue, I will update the list.
 #### Tested OS List
 - Ubuntu 18.04.2 LTS
 - CentOS Linux release 7.6.1810
+- Raspberry Pi OS 10 (buster) -- Tested on *Raspberry Pi 3 Model B+* by [*Jonathan Engqvist*](https://github.com/Nebour)  
 
 ## Contact
 If you have any question or want to report an error (or any other suggestion), simply make an issue with description.
