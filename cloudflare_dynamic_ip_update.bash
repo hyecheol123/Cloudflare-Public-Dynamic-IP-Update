@@ -5,8 +5,6 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
-set -ex
-
 ## Using dig command (https://en.wikipedia.org/wiki/Dig_(command)) to get current public IP address
 currentIP=$(dig -4 TXT +short o-o.myaddr.1.google.com @ns1.google.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
@@ -57,7 +55,7 @@ declare -a recordProxied
 for string in ${updateTarget[@]}; do  ## retrieve record's IP Address and save to recordIP
     content=$(
         printf '%b' "$curlHeader" |
-        curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${string}" \
+        curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${string}&type=A" \
             -H @-
     )
     ## Parse JSON  https://stackoverflow.com/questions/42427371/cloudflare-api-cut-json-response
