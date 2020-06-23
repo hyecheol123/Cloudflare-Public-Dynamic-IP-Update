@@ -5,6 +5,8 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
+set -ex
+
 ## Using dig command (https://en.wikipedia.org/wiki/Dig_(command)) to get current public IP address
 currentIP=$(dig -4 TXT +short o-o.myaddr.1.google.com @ns1.google.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
@@ -39,6 +41,13 @@ IFS=',' read -r -a updateTarget <<< "$(echo $(echo $readResult | cut -d' ' -f 4)
 unset readResult
 unset IFS
 
+if [ "$email" = '' ]; then
+    curlHeader="Authorization: Bearer $key"
+else
+    curlHeader="X-Auth-Email: $email\nX-Auth-Key: $key"
+fi
+curlHeader="$curlHeader\nContent-Type: application/json"
+
 ## Make space for saving record's IP Address, Type, and Name
 declare -a recordIP
 declare -a recordType
@@ -47,10 +56,9 @@ declare -a dnsID
 declare -a recordProxied
 for string in ${updateTarget[@]}; do  ## retrieve record's IP Address and save to recordIP
     content=$(
+        printf '%b' "$curlHeader" |
         curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${string}" \
-            -H "X-Auth-Email: $email" \
-            -H "X-Auth-Key: $key" \
-            -H "Content-Type: application/json"
+            -H @-
     )
     ## Parse JSON  https://stackoverflow.com/questions/42427371/cloudflare-api-cut-json-response
     ## Using jq  https://stedolan.github.io/jq/
@@ -92,11 +100,10 @@ while [ $count -lt ${#needUpdate[@]} ]; do
     if [ ${needUpdate[count]} == 'True' ]; then
         echo "record IP needs to be updated for "${recordName[count]}
         success=$(
+            printf '%c' "$curlHeader" |
             curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records/${dnsID[count]}" \
-                -H "X-Auth-Email: $email" \
-                -H "X-Auth-Key: $key" \
-                -H "Content-Type: application/json" \
-                --data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}' | \
+                --data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}' \
+                -H @- | \
             jq '.success' | cut -d'"' -f 2
         )
         if [ $success == true ]; then
