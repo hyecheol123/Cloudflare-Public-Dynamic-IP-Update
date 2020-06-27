@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Title of this Bug**
+Please also add this title next to [BUG] on the issue title
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
