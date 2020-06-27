@@ -40,8 +40,9 @@ As soon as I check the issue, I will update the list.
 
 #### Tested OS List
 - Ubuntu 18.04.2 LTS
+- Ubuntu 20.04 LTS
 - CentOS Linux release 7.6.1810
-- Raspberry Pi OS 10 (buster) -- Tested on *Raspberry Pi 3 Model B+* by [*Jonathan Engqvist*](https://github.com/Nebour)  
+- ~Raspberry Pi OS 10 (buster) -- Tested on *Raspberry Pi 3 Model B+* by [*Jonathan Engqvist*](https://github.com/Nebour)~ (Tested on Old Version of Code) 
 
 
 ## Other contributors
@@ -50,5 +51,3 @@ As soon as I check the issue, I will update the list.
 
 ## Contact
 If you have any question or want to report an error (or any other suggestion), simply make an issue with description.
-
-If you want DNS record IP update shell script for multiple DNS zones, I may work for that. Just simple post an issue on this github repository.
