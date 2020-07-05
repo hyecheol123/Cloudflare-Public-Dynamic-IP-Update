@@ -6,7 +6,7 @@
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
 ## Using dig command (https://en.wikipedia.org/wiki/Dig_(command)) to get current public IP address
-currentIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+currentIP=$( (command -v dig 2>&1 >/dev/null && dig +short myip.opendns.com @resolver1.opendns.com) || curl -s checkip.amazonaws.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
     ## Making substring, only retrieving ip address of this server
     ## https://stackabuse.com/substrings-in-bash/
