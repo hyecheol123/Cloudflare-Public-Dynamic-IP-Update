@@ -24,24 +24,27 @@ fi
 ## https://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
 ## https://stackoverflow.com/questions/10586153/split-string-into-an-array-in-bash
 SCRIPT_PATH=$(cd $(dirname $0) && pwd)
-readResult=""  ## Store configuration
 while IFS= read -r line || [[ -n "$line" ]]; do
-    readResult+=" "  ## Delimiter: space
-    readResult+="$line"
+	case "$line" in
+		Auth-Key=*)
+			key=${line/Auth-Key=/}
+		;;
+		Auth-Email=*)
+			email=${line/Auth-Email=/}
+		;;
+		Zone-ID=*)
+			zoneID=${line/Zone-ID=/}
+		;;
+		Update-Target=*)
+			updateTarget=${line/Update-Target=/}
+		;;
+		Record-Type=*)
+			type=${line/Record-Type=/}
+		;;
+	esac
 done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
 unset IFS
 unset SCRIPT_PATH
-
-
-## After retrieve information from file, cut result string into configuration elements
-key=$(echo $(echo $readResult | cut -d' ' -f 1) | cut -d'=' -f 2)
-email=$(echo $(echo $readResult | cut -d' ' -f 2) | cut -d'=' -f 2)
-zoneID=$(echo $(echo $readResult | cut -d' ' -f 3) | cut -d'=' -f 2)
-IFS=',' read -r -a updateTarget <<< "$(echo $(echo $readResult | cut -d' ' -f 4) | cut -d'=' -f 2)"
-IFS=',' read -r -a recordType <<< "$(echo $(echo $readResult | cut -d' ' -f 5) | cut -d'=' -f 2)"
-unset readResult
-unset IFS
-
 
 ## If Auth-Email is empty, use Token Authentication.
 if [ "$email" = '' ]; then
