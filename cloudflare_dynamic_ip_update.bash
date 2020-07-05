@@ -39,7 +39,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 			updateTarget=${line/Update-Target=/}
 		;;
 		Record-Type=*)
-			type=${line/Record-Type=/}
+			recordType=${line/Record-Type=/}
 		;;
 	esac
 done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
@@ -74,7 +74,7 @@ while [ $updateTargetIndex -lt ${#updateTarget[@]} ]; do
     type=${recordType[updateTargetIndex]}
     
     ## run the commend to get other DNS record properties
-    content=$(eval "$curlCommand -X GET \"https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${string}&type=${type}\"")
+    content=$(eval "$curlCommand -X GET \"https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${name}&type=${type}\"")
 
     ## Parse JSON  https://stackoverflow.com/questions/42427371/cloudflare-api-cut-json-response
     ## Using jq  https://stedolan.github.io/jq/
@@ -127,13 +127,13 @@ count=0
 while [ $count -lt ${#needUpdate[@]} ]; do
     if [ ${needUpdate[count]} == 'True' ]; then
         echo "record IP needs to be updated for "${recordName[count]}" with recordType "${recordType[count]}
-        success=$(eval $(cat <<CMD
+        content=$(eval $(cat <<CMD
 $curlCommand -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records/${dnsID[count]}" \
 --data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}'
 CMD
         ))
 
-        if [ $(echo $content | jq '.success') = "true" ]; then
+        if [ "$(echo $content | jq '.success')" = "true" ]; then
             echo "Success update record IP of "${recordName[count]}" with recordType "${recordType[count]}
         else
             echo "Fail to update record IP of "${recordName[count]}" with recordType "${recordType[count]}
