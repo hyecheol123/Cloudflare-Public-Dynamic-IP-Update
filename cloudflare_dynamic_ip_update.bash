@@ -5,8 +5,8 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
-## Using dig command (https://en.wikipedia.org/wiki/Dig_(command)) to get current public IP address
-currentIP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+## get current public IP address
+currentIP=$(curl -s checkip.amazonaws.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
     ## Making substring, only retrieving ip address of this server
     ## https://stackabuse.com/substrings-in-bash/
@@ -21,36 +21,40 @@ fi
 ## Use Cloudflare API to retrieve recordIP
 ## https://api.cloudflare.com/
 ## Read configuration from separated cloudflare_config file (need to locate in the same directory)
-## https://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
-## https://stackoverflow.com/questions/10586153/split-string-into-an-array-in-bash
-SCRIPT_PATH=$(dirname $(realpath $0))
-readResult=""  ## Store configuration
+SCRIPT_PATH=$(cd $(dirname $0) && pwd)
 while IFS= read -r line || [[ -n "$line" ]]; do
-    readResult+=" "  ## Delimiter: space
-    readResult+="$line"
+	case "$line" in
+		Auth-Key=*)
+			key=${line/Auth-Key=/}
+		;;
+		Auth-Email=*)
+			email=${line/Auth-Email=/}
+		;;
+		Zone-ID=*)
+			zoneID=${line/Zone-ID=/}
+		;;
+		Update-Target=*)
+			updateTarget=${line/Update-Target=/}
+		;;
+		Record-Type=*)
+			recordType=${line/Record-Type=/}
+		;;
+	esac
 done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
 unset IFS
 unset SCRIPT_PATH
 
 
-## After retrieve information from file, cut result string into configuration elements
-key=$(echo $(echo $readResult | cut -d' ' -f 1) | cut -d'=' -f 2)
-email=$(echo $(echo $readResult | cut -d' ' -f 2) | cut -d'=' -f 2)
-zoneID=$(echo $(echo $readResult | cut -d' ' -f 3) | cut -d'=' -f 2)
-IFS=',' read -r -a updateTarget <<< "$(echo $(echo $readResult | cut -d' ' -f 4) | cut -d'=' -f 2)"
-IFS=',' read -r -a recordType <<< "$(echo $(echo $readResult | cut -d' ' -f 5) | cut -d'=' -f 2)"
-unset readResult
-unset IFS
-
-
+curlCommand='curl -s '
 ## If Auth-Email is empty, use Token Authentication.
 if [ "$email" = '' ]; then
-    curlHeader="Authorization: Bearer $key"
+    curlCommand="$curlCommand -H 'Authorization: Bearer $key'"
 else
-    curlHeader="X-Auth-Email: $email\nX-Auth-Key: $key"
+    curlCommand="$curlCommand -H 'X-Auth-Email: $email'"
+    curlCommand="$curlCommand -H 'X-Auth-Key: $key'"
 fi
 #### Commonly, the header includes Content-Type field
-curlHeader="$curlHeader\nContent-Type: application/json"
+curlCommand="$curlCommand -H 'Content-Type: application/json'"
 
 
 ## Make space for saving record's IP Address, Type, and Name
@@ -68,11 +72,7 @@ while [ $updateTargetIndex -lt ${#updateTarget[@]} ]; do
     type=${recordType[updateTargetIndex]}
     
     ## run the commend to get other DNS record properties
-    content=$(
-        printf '%b' "$curlHeader" |
-        curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${name}&type=${type}" \
-             -H @-
-    )
+    content=$(eval "$curlCommand -X GET \"https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${name}&type=${type}\"")
 
     ## Parse JSON  https://stackoverflow.com/questions/42427371/cloudflare-api-cut-json-response
     ## Using jq  https://stedolan.github.io/jq/
@@ -125,14 +125,13 @@ count=0
 while [ $count -lt ${#needUpdate[@]} ]; do
     if [ ${needUpdate[count]} == 'True' ]; then
         echo "record IP needs to be updated for "${recordName[count]}" with recordType "${recordType[count]}
-        content=$(
-            printf '%b' "$curlHeader" |
-            curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records/${dnsID[count]}" \
-                 --data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}' \
-                 -H @-
-        )
+        content=$(eval $(cat <<CMD
+$curlCommand -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records/${dnsID[count]}" \
+--data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}'
+CMD
+        ))
 
-        if [ $(echo $content | jq '.success') = "true" ]; then
+        if [ "$(echo $content | jq '.success')" = "true" ]; then
             echo "Success update record IP of "${recordName[count]}" with recordType "${recordType[count]}
         else
             echo "Fail to update record IP of "${recordName[count]}" with recordType "${recordType[count]}
@@ -147,8 +146,8 @@ while [ $count -lt ${#needUpdate[@]} ]; do
     unset content
 done
 
-unset count
 unset currentIP
+unset curlCommand
 unset key
 unset email
 unset zoneID
@@ -156,4 +155,5 @@ unset recordType
 unset recordName
 unset dnsID
 unset recordProxied
+unset count
 unset needUpdate
