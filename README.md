@@ -3,24 +3,11 @@ Updating public dynamic IP address to existing cloudflare DNS record
 Only support chaning IP of A records. If you specifically want support for other records type, please open an issue.
 
 ## Requirement
-Using [curl](https://en.wikipedia.org/wiki/CURL) and [jq](https://stedolan.github.io/jq/) (Need to install **epel-release** prior to install jq in CentOS). <br/>
-Check whether jq is installed on your system or not before use this script
+Using [curl](https://en.wikipedia.org/wiki/CURL) and [jq](https://stedolan.github.io/jq/) (Need to install **epel-release** prior to install jq in CentOS).  
+Check whether jq is installed on your system or not before use this script.<br>  
 
-Need to customize cloudflare_config file before using this script.  
-
-- **Auth-Key**  
-Authorization key for cloudflare API. Able to find it at **My Profile** page. Substitute **[Your_CloudFlare_API_Auth_Key]** with your API key. To edit DNS zone entry, the API key need to have  **DNS:write permission** on the zones you want to update IP address.
-This code support either global API key or API Token. If you want to use API token instead of Global API key, you should leave ***Auth-Email*** blank (`Auth-Email=`).   
-*Follow this [Instruction](https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key-)*
-- **Auth-Email**  
-Your Cloudflare account login email. Substitute **[Your_CloudFlare_Account_Email]** with yours.  
-If you want to use API token instead of Global API key, you should leave ***Auth-Email*** blank (`Auth-Email=`).   
-- **Zone-ID**  
-You can find zone ID of your DNS Zone on the right sidebar of cloudflare DNS overview page, under API tab. Substitute **[DNS_Zone_ID_of_Your_Domain]** with yours.
-- **Update-Target**  
-Meaning list of domain address that you want to update linking ip address via this script. List must be separated by single comma(,).
-Substitute **[List_Of_Domain_Address_You_Want_To_Update]** with your list.  
-*e.g. "google.com,google.com,www.google.com"*
+**Need to run `configure.bash` once before execute `cloudflare_dynamic_ip_update.bash`.**  
+While running `configure.bash`, you are prompt to enter API token. The API token should have `Zone:Read` and `DNS:Edit` permission. If you need detailed guideline how to get API Token, please check [this document](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/blob/feature-%237/docs/How_To_Issue_API_Token.md).
 
 
 ## Tested Environment
