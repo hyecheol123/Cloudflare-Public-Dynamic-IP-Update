@@ -2,9 +2,8 @@
 Updating public dynamic IP address to existing cloudflare DNS record  
 Only support chaning IP of A records. If you specifically want support for other records type, please open an issue.
 
-
 ## Requirement
-Using [curl](https://en.wikipedia.org/wiki/CURL), [jq](https://stedolan.github.io/jq/) (Need to install **epel-release** prior to install jq in CentOS), and [dig](https://en.wikipedia.org/wiki/Dig_(command)) command. <br/>
+Using [curl](https://en.wikipedia.org/wiki/CURL) and [jq](https://stedolan.github.io/jq/) (Need to install **epel-release** prior to install jq in CentOS). <br/>
 Check whether jq is installed on your system or not before use this script
 
 Need to customize cloudflare_config file before using this script.  
