@@ -7,7 +7,7 @@ Using [curl](https://en.wikipedia.org/wiki/CURL) and [jq](https://stedolan.githu
 Check whether jq is installed on your system or not before use this script.<br>  
 
 **Need to run `configure.bash` once before execute `cloudflare_dynamic_ip_update.bash`.**  
-While running `configure.bash`, you are prompt to enter API token. The API token should have `Zone:Read` and `DNS:Edit` permission. If you need detailed guideline how to get API Token, please check [this document](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/blob/feature-%237/docs/How_To_Issue_API_Token.md).
+While running `configure.bash`, you are prompt to enter API token. The API token should have `Zone:Read` and `DNS:Edit` permission. If you need detailed guideline how to get API Token, please check [this document](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/blob/master/docs/How_To_Issue_API_Token.md).
 
 
 ## Tested Environment

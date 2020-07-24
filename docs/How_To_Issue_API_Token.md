@@ -9,6 +9,6 @@ However, I want to guide you how to make tokens having specific permissions.
 
 - At **step 5** of official guide, you should click **Create Custom Token - Get Started**.
 - On **Permissions Tab**, select proper permissions. See the image below.  
-  ![/images/cloudflare_API_permission.png](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/blob/feature-%237/docs/images/cloudflare_API_permission.png?raw=true)
+  ![cloudflare_API_permission.png](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/blob/master/docs/images/cloudflare_API_permission.png?raw=true)
   - `Zone:Read` permission means **Zone - Zone - Read**
   - `DNS:Edit` permission means **Zone - DNS - Edit**
