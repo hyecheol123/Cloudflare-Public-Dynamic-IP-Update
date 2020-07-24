@@ -20,12 +20,9 @@ As soon as I check the issue, I will update the list.
 - Has no connection, and see the error message
 
 #### Tested OS List
-- Ubuntu 18.04.2 LTS
+As the script has been modified a lot, the previous tested version list has been removed. You are welcome to create an issue with test results.
 - Ubuntu 20.04 LTS
-- CentOS Linux release 7.6.1810
-- CentOS 6.6 (Final)
 - Debian GNU/Linux 10 (buster) *arm64*
-- ~Raspberry Pi OS 10 (buster) -- Tested on *Raspberry Pi 3 Model B+* by [*Jonathan Engqvist*](https://github.com/Nebour)~ (Tested on Old Version of Code) 
 
 
 ## Other contributors
