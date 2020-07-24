@@ -6,7 +6,7 @@
 # Prompt to get API token
 echo "Need Cloudflare API Token with Zone:Read and DNS:Edit Permission"
 echo "Please go to Cloudflare Website and Issue API Token and paste below"
-echo -e "More Information: https://bit.ly/39rfI0g \n"
+echo -e "More Information: https://bit.ly/30HY0C3 \n"
 read -p 'Paste API Token here: ' apiToken # Get API Token
 
 # Validate API Token
