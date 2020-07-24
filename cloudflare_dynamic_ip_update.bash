@@ -5,8 +5,8 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
-## Using dig command (https://en.wikipedia.org/wiki/Dig_(command)) to get current public IP address
-currentIP=$( (command -v dig 2>&1 >/dev/null && dig +short myip.opendns.com @resolver1.opendns.com) || curl -s checkip.amazonaws.com)
+## get current public IP address
+currentIP=$(curl -s checkip.amazonaws.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
     ## Making substring, only retrieving ip address of this server
     ## https://stackabuse.com/substrings-in-bash/
@@ -21,8 +21,6 @@ fi
 ## Use Cloudflare API to retrieve recordIP
 ## https://api.cloudflare.com/
 ## Read configuration from separated cloudflare_config file (need to locate in the same directory)
-## https://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
-## https://stackoverflow.com/questions/10586153/split-string-into-an-array-in-bash
 SCRIPT_PATH=$(cd $(dirname $0) && pwd)
 while IFS= read -r line || [[ -n "$line" ]]; do
 	case "$line" in
@@ -148,8 +146,8 @@ CMD
     unset content
 done
 
-unset count
 unset currentIP
+unset curlCommand
 unset key
 unset email
 unset zoneID
@@ -157,4 +155,5 @@ unset recordType
 unset recordName
 unset dnsID
 unset recordProxied
+unset count
 unset needUpdate
