@@ -36,11 +36,8 @@ while IFS= read -r line || [[ -n "$line" ]]; do
 		Update-Target=*)
 			updateTarget=${line/Update-Target=/}
 		;;
-		Record-Type=*)
-			recordType=${line/Record-Type=/}
-		;;
 	esac
-done < $SCRIPT_PATH"/cloudflare_config"  ## use cloudflare_config file
+done < $SCRIPT_PATH"/cloudflare.config"  ## use cloudflare_config file
 unset IFS
 unset SCRIPT_PATH
 
@@ -69,10 +66,9 @@ count=0
 while [ $updateTargetIndex -lt ${#updateTarget[@]} ]; do
     ## Extract name and type of DNS record from the configuration file
     name=${updateTarget[updateTargetIndex]}
-    type=${recordType[updateTargetIndex]}
     
     ## run the commend to get other DNS record properties
-    content=$(eval "$curlCommand -X GET \"https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${name}&type=${type}\"")
+    content=$(eval "$curlCommand -X GET \"https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records?name=${name}&type=A\"")
 
     ## Parse JSON  https://stackoverflow.com/questions/42427371/cloudflare-api-cut-json-response
     ## Using jq  https://stedolan.github.io/jq/
@@ -94,7 +90,7 @@ while [ $updateTargetIndex -lt ${#updateTarget[@]} ]; do
         unset proxied
 
     else ## Error occurred while getting DNS record information
-        echo "Error occurred while retrieving current information for "${name}" with type "${type}
+        echo "Error occurred while retrieving current information for "${name}
     fi
 
     updateTargetIndex=$((${updateTargetIndex}+1))
@@ -124,21 +120,21 @@ unset recordIP  ## X Need recordIP Anymore
 count=0
 while [ $count -lt ${#needUpdate[@]} ]; do
     if [ ${needUpdate[count]} == 'True' ]; then
-        echo "record IP needs to be updated for "${recordName[count]}" with recordType "${recordType[count]}
+        echo "record IP needs to be updated for "${recordName[count]}
         content=$(eval $(cat <<CMD
 $curlCommand -X PUT "https://api.cloudflare.com/client/v4/zones/$zoneID/dns_records/${dnsID[count]}" \
---data '{"type":"'"${recordType[count]}"'","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}'
+--data '{"type":"A","name":"'"${recordName[count]}"'","content":"'"$currentIP"'","proxied":'${recordProxied[count]}'}'
 CMD
         ))
 
         if [ "$(echo $content | jq '.success')" = "true" ]; then
-            echo "Success update record IP of "${recordName[count]}" with recordType "${recordType[count]}
+            echo "Success update record IP of "${recordName[count]}
         else
-            echo "Fail to update record IP of "${recordName[count]}" with recordType "${recordType[count]}
+            echo "Fail to update record IP of "${recordName[count]}
             echo "Please Check result!!"
         fi
     else
-        echo "record IP does not need to be updated for "${recordName[count]}" with recordType "${recordType[count]}
+        echo "record IP does not need to be updated for "${recordName[count]}
     fi
     echo ""
     count=$((${count}+1))
@@ -151,7 +147,6 @@ unset curlCommand
 unset key
 unset email
 unset zoneID
-unset recordType
 unset recordName
 unset dnsID
 unset recordProxied
