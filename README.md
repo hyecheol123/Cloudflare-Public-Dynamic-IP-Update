@@ -23,7 +23,7 @@ As soon as I check the issue, I will update the list.
 As the script has been modified a lot, the previous tested version list has been removed. You are welcome to create an issue with test results.
 - Ubuntu 20.04 LTS
 - Debian GNU/Linux 10 (buster) *arm64*
-
+  - Raspberry Pi OS Lite *arm32* [Issue #12, DanielSchetritt](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/issues/12)
 
 ## Other contributors
 - [Rp70](https://github.com/Rp70) provides update to support API Token and records with same name. *[PR #5](https://github.com/hyecheol123/Cloudflare-Public-Dynamic-IP-Update/pull/5)*
