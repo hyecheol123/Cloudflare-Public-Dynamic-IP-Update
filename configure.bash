@@ -3,6 +3,10 @@
 ## Author: Hyecheol (Jerry) Jang
 ## Shell script to generate cloudflare.config
 
+## To load user's bash environment (load alias for jq)
+shopt -s expand_aliases
+source ~/.bashrc
+
 # Prompt to get API token
 echo "Need Cloudflare API Token with Zone:Read and DNS:Edit Permission"
 echo "Please go to Cloudflare Website and Issue API Token and paste below"

@@ -5,6 +5,10 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
+## To load user's bash environment (load alias for jq)
+shopt -s expand_aliases
+source ~/.bashrc
+
 ## get current public IP address
 currentIP=$(curl -s checkip.amazonaws.com)
 if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
