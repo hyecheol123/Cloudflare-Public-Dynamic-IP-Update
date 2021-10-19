@@ -5,19 +5,15 @@
 ## and update it to the Cloudflare DNS record after comparing ip address registered to Cloudflare
 ## basic shell scripting guide https://blog.gaerae.com/2015/01/bash-hello-world.html
 
-## To load user's bash environment (load alias for jq)
-shopt -s expand_aliases
-source ~/.bashrc
-
 ## get current public IP address
 currentIP=$(curl -s checkip.amazonaws.com)
-if [ $? == 0 ] && [ ${currentIP} ]; then  ## when dig command run without error,
+if [[ $? == 0 ]] && [[ ${currentIP} ]]; then  ## when dig command run without error,
     ## Making substring, only retrieving ip address of this server
     ## https://stackabuse.com/substrings-in-bash/
     currentIP=$(echo $currentIP | cut -d'"' -f 2)
     echo "current public IP address is "$currentIP
 else  ## error happens,
-    echo "Check your internet connection, or google DNS server maybe interruptted"
+    echo "Check your internet connection"
     exit
 fi
 
@@ -30,33 +26,33 @@ zoneid=($(jq -r '."update-target"[].zone_id' $CONFIG_PATH))
 unset CONFIG_PATH
 
 # Error Checks
-if [ ${#name[@]} != ${#id[@]} ]; then
+if [[ ${#name[@]} != ${#id[@]} ]]; then
   echo "Config file Disrupted!!"
   echo "Please re-generate config.json file (run configure.bash)"
   exit
 fi
-if [ ${#name[@]} != ${#id[@]} ]; then
+if [[ ${#name[@]} != ${#id[@]} ]]; then
   echo "Config file Disrupted!!"
   echo "Please re-generate config.json file (run configure.bash)"
   exit
 fi
 
 index=0
-while [ $index -lt ${#id[@]} ]; do # For all update targets in config file
+while [[ $index -lt ${#id[@]} ]]; do # For all update targets in config file
   # Retrieve current DNS status
   dnsStatusAPICall=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${zoneid[index]}/dns_records/${id[index]}" \
                              -H "Authorization: Bearer $apiKey" \
                              -H "Content-Type:application/json" | jq .)
   
   # Check for status
-  if [ $(echo $dnsStatusAPICall | jq .success) != true ] || [ $(echo $dnsStatusAPICall | jq -r .result.name) != ${name[index]} ]; then
+  if [[ $(echo $dnsStatusAPICall | jq .success) != true ]] || [[ $(echo $dnsStatusAPICall | jq -r .result.name) != ${name[index]} ]]; then
     echo "Error Occurred While Accessing Current DNS Status"
     echo "May Caused by outdated config file. Please re-generate config.json file (run configure.bash)"
     exit
   fi
 
   # compare recordIP with currentIP
-  if [ $(echo $dnsStatusAPICall | jq -r .result.content) == $currentIP ]; then
+  if [[ $(echo $dnsStatusAPICall | jq -r .result.content) == $currentIP ]]; then
     echo "${name[index]}: no needs to update"
   else # Need to update
     proxied=$(echo $dnsStatusAPICall | jq -r .result.proxied)
@@ -74,7 +70,7 @@ while [ $index -lt ${#id[@]} ]; do # For all update targets in config file
     unset data
 
     # Check for result
-    if [ $(echo $updateResult | jq -r .success) != true ] || [ $(echo $updateResult | jq -r .result.content) != $currentIP ]; then
+    if [[ $(echo $updateResult | jq -r .success) != true ]] || [[ $(echo $updateResult | jq -r .result.content) != $currentIP ]]; then
       echo "Error While updating ${name[index]}"
     else
       echo "${name[index]}: successfully updated to $currentIP"
